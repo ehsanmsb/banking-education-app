@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/ehsanmsb/banking-education-app/internal/app"
+	"github.com/ehsanmsb/banking-education-app/internal/db"
 )
 
 // I am going to implement Hexagonal Architecture (adaptors and ports)
 func main() {
-	app.StartServer()
+	db.Database()
+	//app.StartServer()
 }
