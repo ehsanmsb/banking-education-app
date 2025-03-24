@@ -36,10 +36,15 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 	customerId := params["customer_id"]
 	customer, err := ch.service.GetCustomerById(customerId)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Message)
+		w.WriteHeader(err.Code)
+		_, err := w.Write([]byte(err.Message))
+		if err != nil {
+			return
+		}
 	} else {
 		w.Header().Set("Content-Type", "application/json")
-		err = json.NewEncoder(w).Encode(customer)
+		err := json.NewEncoder(w).Encode(customer)
 		if err != nil {
 			log.Println("getCustomer err: ", err)
 		}

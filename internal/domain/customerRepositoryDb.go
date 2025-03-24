@@ -2,8 +2,11 @@ package domain
 
 import (
 	"database/sql"
+	"errors"
+	"github.com/ehsanmsb/banking-education-app/internal/errs"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -29,11 +32,22 @@ func (db CustomerRepositoryDb) FindAll() ([]Customer, error) {
 
 }
 
-func (db CustomerRepositoryDb) ById(id string) (*Customer, error) {
+func (db CustomerRepositoryDb) ById(id string) (*Customer, *errs.AppError) {
 	row := db.client.QueryRow("SELECT * FROM Customers WHERE ID = ?", id)
 	var user = Customer{}
-	if err := row.Scan(&user.ID, &user.Name, &user.City, &user.Birthdate, &user.ZipCode, &user.Status); err != nil {
-		return nil, err
+	err := row.Scan(&user.ID, &user.Name, &user.City, &user.Birthdate, &user.ZipCode, &user.Status)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, &errs.AppError{
+				Message: "Customer not found",
+				Code:    http.StatusNotFound,
+			}
+		} else {
+			return nil, &errs.AppError{
+				Message: "Unexpected database error",
+				Code:    http.StatusInternalServerError,
+			}
+		}
 	}
 	return &user, nil
 }
