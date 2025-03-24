@@ -29,6 +29,15 @@ func (db CustomerRepositoryDb) FindAll() ([]Customer, error) {
 
 }
 
+func (db CustomerRepositoryDb) ById(id string) (*Customer, error) {
+	row := db.client.QueryRow("SELECT * FROM Customers WHERE ID = ?", id)
+	var user = Customer{}
+	if err := row.Scan(&user.ID, &user.Name, &user.City, &user.Birthdate, &user.ZipCode, &user.Status); err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func NewCustomerRepositoryDb() *CustomerRepositoryDb {
 	client, err := sql.Open("mysql", "golang:mypass@tcp(localhost:3306)/ehsan")
 	if err != nil {

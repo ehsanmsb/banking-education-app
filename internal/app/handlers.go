@@ -3,11 +3,12 @@ package app
 import (
 	"encoding/json"
 	"encoding/xml"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
 
-func (ch *CustomerHandlers) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
+func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, _ := ch.service.GetAllCustomers()
 	//customers := []customer{
 	//	{Name: "Ehsan", Email: "ehsan.mosayebi@snapp.cab", City: "Tehran", ZipCode: "123456"},
@@ -27,5 +28,18 @@ func (ch *CustomerHandlers) GetAllCustomers(w http.ResponseWriter, r *http.Reque
 		if err != nil {
 			log.Println("getAllUsers err: ", err)
 		}
+	}
+}
+
+func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	customerId := params["customer_id"]
+	customer, err := ch.service.GetCustomerById(customerId)
+	if err != nil {
+		log.Println(err)
+	}
+	err = json.NewEncoder(w).Encode(customer)
+	if err != nil {
+		log.Fatal("json err: ", err)
 	}
 }

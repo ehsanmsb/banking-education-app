@@ -4,10 +4,15 @@ import "github.com/ehsanmsb/banking-education-app/internal/domain"
 
 type CustomerService interface {
 	GetAllCustomers() ([]domain.Customer, error)
+	GetCustomerById(customerId string) (*domain.Customer, error)
 }
 
 type DefaultCustomerService struct {
 	repo domain.CustomerRepository
+}
+
+func (s DefaultCustomerService) GetCustomerById(customerId string) (*domain.Customer, error) {
+	return s.repo.ById(customerId)
 }
 
 func (s DefaultCustomerService) GetAllCustomers() ([]domain.Customer, error) {
