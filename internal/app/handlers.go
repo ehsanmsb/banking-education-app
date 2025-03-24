@@ -37,9 +37,11 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 	customer, err := ch.service.GetCustomerById(customerId)
 	if err != nil {
 		log.Println(err)
-	}
-	err = json.NewEncoder(w).Encode(customer)
-	if err != nil {
-		log.Fatal("json err: ", err)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		err = json.NewEncoder(w).Encode(customer)
+		if err != nil {
+			log.Println("getCustomer err: ", err)
+		}
 	}
 }
