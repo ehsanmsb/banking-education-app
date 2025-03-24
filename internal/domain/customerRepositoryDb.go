@@ -2,6 +2,7 @@ package domain
 
 import (
 	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"time"
 )
@@ -12,8 +13,7 @@ type CustomerRepositoryDb struct {
 
 func (db CustomerRepositoryDb) FindAll() ([]Customer, error) {
 
-	NewCustomerRepositoryDb()
-	rows, err := db.client.Query("SELECT * FROM Persons")
+	rows, err := db.client.Query("SELECT * FROM Customers")
 	if err != nil {
 		panic(err)
 	}

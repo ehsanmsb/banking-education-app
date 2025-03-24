@@ -15,7 +15,7 @@ type CustomerHandlers struct {
 }
 
 func StartServer() {
-	ch := CustomerHandlers{service.NewCustomerService(domain.NewCustomerRepositoryStub())}
+	ch := CustomerHandlers{service.NewCustomerService(domain.NewCustomerRepositoryDb())}
 	//mux := http.NewServeMux()
 	router := mux.NewRouter()
 
