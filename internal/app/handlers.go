@@ -10,12 +10,6 @@ import (
 
 func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, _ := ch.service.GetAllCustomers()
-	//customers := []customer{
-	//	{Name: "Ehsan", Email: "ehsan.mosayebi@snapp.cab", City: "Tehran", ZipCode: "123456"},
-	//	{Name: "Vahid", Email: "vahid.fardi@snapp.cab", City: "Tehran", ZipCode: "456788"},
-	//	{Name: "Mostafa", Email: "mostafa.negim@snapp.cab", City: "Tehran", ZipCode: "8453303"},
-	//	{Name: "Reza", Email: "reza.alizadeh@snapp.cab", City: "Tehran", ZipCode: "8906453"},
-	//}
 	if r.Header.Get("content-type") == "application/xml" {
 		w.Header().Set("content-type", "application/xml")
 		err := xml.NewEncoder(w).Encode(customers)
@@ -37,8 +31,9 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 	customer, err := ch.service.GetCustomerById(customerId)
 	if err != nil {
 		log.Println(err.Message)
+		w.Header().Set("content-type", "application/json")
 		w.WriteHeader(err.Code)
-		_, err := w.Write([]byte(err.Message))
+		err := json.NewEncoder(w).Encode(err)
 		if err != nil {
 			return
 		}
