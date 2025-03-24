@@ -21,7 +21,7 @@ func StartServer() {
 
 	// define route for get all users
 	router.HandleFunc("/customers", ch.getAllCustomers).Methods(http.MethodGet)
-	router.HandleFunc("/customers/{customer_id}", ch.getCustomer)
+	router.HandleFunc("/customers/{customer_id:[0-9]+}", ch.getCustomer)
 
 	// starting server on port 8000
 	err := http.ListenAndServe(ServerPort, router)
