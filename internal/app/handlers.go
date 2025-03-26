@@ -3,6 +3,8 @@ package app
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
+	"github.com/ehsanmsb/banking-education-app/internal/logger"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -30,7 +32,7 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 	customerId := params["customer_id"]
 	customer, err := ch.service.GetCustomerById(customerId)
 	if err != nil {
-		log.Println(err.Message)
+		logger.Error(err.Message)
 		w.Header().Set("content-type", "application/json")
 		w.WriteHeader(err.Code)
 		err := json.NewEncoder(w).Encode(err)
@@ -41,7 +43,7 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 		w.Header().Set("Content-Type", "application/json")
 		err := json.NewEncoder(w).Encode(customer)
 		if err != nil {
-			log.Println("getCustomer err: ", err)
+			logger.Error(fmt.Sprintf("getCustomer err: %s", err))
 		}
 	}
 }
