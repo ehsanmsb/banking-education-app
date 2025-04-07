@@ -6,6 +6,7 @@ import (
 	"github.com/ehsanmsb/banking-education-app/internal/errs"
 	"github.com/ehsanmsb/banking-education-app/internal/logger"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"net/http"
 	"time"
 )
@@ -21,12 +22,9 @@ func (db CustomerRepositoryDb) FindAll() ([]Customer, error) {
 		panic(err)
 	}
 	customers := make([]Customer, 0)
-	for rows.Next() {
-		var user = Customer{}
-		if err := rows.Scan(&user.ID, &user.Name, &user.City, &user.Birthdate, &user.ZipCode, &user.Status); err != nil {
-			logger.Error("Error while scanning customers" + err.Error())
-		}
-		customers = append(customers, user)
+	err = sqlx.StructScan(rows, &customers)
+	if err != nil {
+		logger.Error("Error while scanning customers" + err.Error())
 	}
 	return customers, nil
 
